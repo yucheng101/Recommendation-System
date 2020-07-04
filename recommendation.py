@@ -36,21 +36,26 @@ def get_euclidean(arr1, arr2):
 #%%
 #read movie data
 movies = pd.read_csv(r"dataset\MovieLens\movies.csv")
+movies.columns
+movies.drop('title',axis=1,inplace=True)
 df = pd.read_csv(r"dataset\MovieLens\ratings.csv")
+
+df.drop(['rating', 'timestamp'],axis=1,inplace=True)
 df = pd.merge(df, movies, on='movieId')
 df.columns
+df
 #%%
 #movie vector
 dummies = movies["genres"].str.get_dummies('|')
 movie_vec = pd.concat([movies, dummies], axis=1)
 movie_vec.columns
-movie_vec.drop(['title', 'genres'],axis=1,inplace=True)
+movie_vec.drop('genres',axis=1,inplace=True)
 movie_vec.set_index("movieId",inplace=True)
 
 #user vector 
 dummies = df["genres"].str.get_dummies('|')
 user_vec = pd.concat([df, dummies], axis=1)
-user_vec.drop(['movieId', 'genres','rating', 'timestamp', 'title'],axis=1,inplace=True)
+user_vec.drop(['movieId', 'genres'],axis=1,inplace=True)
 user_vec = user_vec.groupby("userId").mean()
 
 #距離度量 #index=user_vec columns = movie_vec.index
